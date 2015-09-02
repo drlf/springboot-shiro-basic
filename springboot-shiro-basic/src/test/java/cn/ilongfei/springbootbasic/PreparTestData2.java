@@ -18,7 +18,7 @@ import cn.ilongfei.springbootbasic.service.UserService;
  *
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"classpath:config/spring-beans.xml"})
+@ContextConfiguration(locations = {"classpath:config/spring-beans.xml","classpath:config/shiro-web.xml"})
 @TransactionConfiguration(defaultRollback = false)
 
 public class PreparTestData2 {
@@ -28,9 +28,9 @@ public class PreparTestData2 {
 	@Before
     public void setUp() {
 		User u1 = new User();
-		u1.setName("preUser");
+		u1.setName("ddlf");
 		u1.setPassword("123");
-        userService.save(u1);
+        userService.createUser(u1);
 	}
 	
 	@Test

@@ -14,17 +14,9 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import cn.ilongfei.springbootbasic.domain.User;
 import cn.ilongfei.springbootbasic.service.UserService;
 
-/**
- * <p>User: Zhang Kaitao
- * <p>Date: 14-2-12
- * <p>Version: 1.0
- */
-/*@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"classpath:spring-beans.xml", "classpath:spring-shiro.xml"})
-@TransactionConfiguration(defaultRollback = false)*/
+
 
 @RunWith(SpringJUnit4ClassRunner.class)
-//@Transactional
 @ContextConfiguration(classes = RepositoryTestConfig.class)
 public class PreparTestData {
 	@Autowired protected UserService userService;
@@ -35,7 +27,7 @@ public class PreparTestData {
 		User u1 = new User();
 		u1.setName("preUser");
 		u1.setPassword("123");
-        userService.save(u1);
+        userService.createUser(u1);
 	}
 	
 	@Test

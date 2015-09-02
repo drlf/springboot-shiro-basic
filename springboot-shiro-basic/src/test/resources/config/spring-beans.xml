@@ -82,4 +82,6 @@
   <!-- 启动对@AspectJ（面向切面）注解的支持 --> 
   <!-- <aop:aspectj-autoproxy /> -->
   
+  <bean id="passwordHelper" class="cn.ilongfei.springbootbasic.framework.shiro.PasswordHelper" />
+  
 </beans>

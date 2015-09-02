@@ -37,7 +37,7 @@ public class UserServiceTest {
 	
 	@Test
 	public void save() {
-		user = userService.save(user);
+		user = userService.createUser(user);
 		assertThat(user.getId(), not(0L));
 	}
 	

@@ -1,5 +1,13 @@
 本项目为支持springboot的shiro例子,作为基础研究的基础项目，以后所有在项目中用到的技术都要在本项目中实现。
 
+目标：
+1、springboot支持shiro
+2、实现xml和javaconfig配置2中方案
+3、实现url集中配置和rest shiro控制
+4、测试用例
+
+
+
 # 短期目标
 1. 脚手架代码自动生成
 2. rest权限控制
