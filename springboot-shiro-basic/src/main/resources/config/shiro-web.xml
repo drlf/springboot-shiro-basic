@@ -88,6 +88,7 @@
         <property name="securityManager" ref="securityManager"/>
         <property name="loginUrl" value="/login.jsp"/>
         <property name="unauthorizedUrl" value="/unauthorized.jsp"/>
+        <property name="successUrl" value="/user" />  
         <property name="filters">
             <util:map>
                 <entry key="authc" value-ref="formAuthenticationFilter"/>
@@ -95,11 +96,12 @@
         </property>
         <property name="filterChainDefinitions">
             <value>
+                / = anon
+                /login = anon
                 /index.jsp = anon
                 /unauthorized.jsp = anon
                 /login.jsp = authc
                 /logout = logout
-                /** = user
             </value>
         </property>
     </bean>
