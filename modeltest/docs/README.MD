@@ -1,5 +1,5 @@
 #文档说明
-创建modeltest项目，专门用于Entity测试，试验model间的关系及自动建表。
+专门用于Entity测试，试验model间的关系及自动建表。
 
 #项目内容
 
