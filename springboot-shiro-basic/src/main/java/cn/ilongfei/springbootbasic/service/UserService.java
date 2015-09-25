@@ -42,16 +42,14 @@ public class UserService {
         passwordHelper.encryptPassword(user);
         simpleUserRepository.save(user);
     }
-	
-	
-	
+
 	@Transactional
 	public User update(User user){
 		if(user.getId() != 0){
 			User tmp = simpleUserRepository.findOne(user.getId());
-			tmp.setName(user.getName());
+			tmp.setUsername(user.getUsername());
 			tmp.setPassword(user.getPassword());
-			tmp.setPhone(user.getPhone());
+			tmp.setSalt(user.getSalt());
 			return tmp;
 		}
 		return null;
@@ -65,8 +63,8 @@ public class UserService {
 		simpleUserRepository.delete(id);
 	}
 	
-	public User findByName(String name){
-		return simpleUserRepository.findByName(name);
+	public User findByUsername(String name){
+		return simpleUserRepository.findByUsername(name);
 	}
 	
 	public Set<String> findRoles(String name) {

@@ -30,9 +30,9 @@ public class UserServiceTest {
 	@Before
 	public void setUp() {
 		user = new User();
-		user.setName("lf");
+		user.setUsername("lf");
 		user.setPassword("123456");
-		user.setPhone("12311111111");
+		user.setSalt("12311111111");
 	}
 	
 	@Test
@@ -46,7 +46,7 @@ public class UserServiceTest {
 		List<User> users = userService.findAll();
 		assertThat(users.size(), not(0));
 		for(User user: users){
-			System.out.println("user:" + user.getName());
+			System.out.println("user:" + user.getUsername());
 		}
 	}
 

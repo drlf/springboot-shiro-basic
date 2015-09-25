@@ -25,7 +25,7 @@ public class PreparTestData {
 	@Before
     public void setUp() {
 		User u1 = new User();
-		u1.setName("preUser");
+		u1.setUsername("preUser");
 		u1.setPassword("123");
         userService.createUser(u1);
 	}

@@ -26,4 +26,9 @@ public class HomeController {
 	public String login() {
 		return "success";
 	}
+	
+	@RequestMapping(value="success", method = RequestMethod.GET)
+	public String success() {
+		return "success";
+	}
 }
