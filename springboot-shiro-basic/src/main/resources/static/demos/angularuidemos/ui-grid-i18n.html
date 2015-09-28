@@ -1,0 +1,47 @@
+<!doctype html>
+<html ng-app="app">
+  <head>
+    <script src="//cdn.bootcss.com/angular.js/1.2.26/angular.js"></script>
+    <script src="//cdn.bootcss.com/angular-ui-grid/3.0.6/ui-grid.js"></script>
+    <link href="//cdn.bootcss.com/angular-ui-grid/3.0.6/ui-grid.css" rel="stylesheet">
+  </head>
+  <body>
+    <div ng-controller="MainCtrl">
+      <select ng-model="lang" ng-options="l for l in langs"></select><br>
+    
+      <div ui-i18n="{{lang}}">
+         <p>Using attribute:</p>
+         <p ui-t="groupPanel.description"></p>
+         <br/>
+         <p>Using Filter:</p>
+         <p>{{"groupPanel.description" | t}}</p>
+    
+         <p>Click the header menu to see language. NOTE: TODO: header text does not change after grid is rendered. </p>
+    
+         <div ui-grid="gridOptions" class="grid"></div>
+      </div>
+    
+    </div>
+  </body>
+  <script>
+  var app = angular.module('app', ['ui.grid']);
+  
+  app.controller('MainCtrl', ['$scope', 'i18nService', '$http', function ($scope, i18nService, $http) {
+    $scope.langs = i18nService.getAllLangs();
+    $scope.lang = 'fr';
+   
+    $scope.gridOptions = {
+      columnDefs: [
+        { field: 'name' },
+        { field: 'gender' },
+        { field: 'company', enableFiltering: false  }
+      ]
+    };
+   
+    $http.get('100.json')
+    .success(function(data) {
+      $scope.gridOptions.data = data;
+    });
+  }]);
+  </script>
+</html>
