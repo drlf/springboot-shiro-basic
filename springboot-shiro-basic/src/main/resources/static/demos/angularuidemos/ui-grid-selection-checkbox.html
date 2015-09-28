@@ -24,6 +24,9 @@
   app.controller('MainCtrl', [
   '$scope', '$http', 'uiGridConstants', function($scope, $http, uiGridConstants) {
 	  $scope.lang = 'zh-cn';
+	  
+	  $scope.mySelections = [];  
+	  
     var paginationOptions = {
       pageNumber: 1,
       pageSize: 25,
@@ -35,7 +38,10 @@
       paginationPageSize: 25,
       useExternalPagination: true,
       useExternalSorting: true,
-      //i18n:'zh-cn',
+      selectedItems: $scope.mySelections,  
+      showSelectionCheckbox: true,  
+      multiSelect: true,  
+      i18n:'zh-cn',
       columnDefs: [
         { name: 'name' },
         { name: 'gender', enableSorting: false },

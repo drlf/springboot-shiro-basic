@@ -1,0 +1,113 @@
+<!doctype html>
+<html ng-app="myApp">
+  <head>
+    <script src="//cdn.bootcss.com/angular.js/1.2.26/angular.js"></script>
+    <script src="//cdn.bootcss.com/angular-ui-grid/3.0.6/ui-grid.js"></script>
+    <link href="//cdn.bootcss.com/angular-ui-grid/3.0.6/ui-grid.css" rel="stylesheet">
+    <style type="text/css">  
+    .gridStyle {  
+        border: 1px solid rgb(212,212,212);  
+        width: 800px;  
+        height: 300px;  
+    }  
+  
+  
+    .green {  
+        background-color: green;  
+        color: white;  
+    }  
+</style>  
+  </head>
+  <body>
+   <div class="row" data-ng-controller="myController">  
+    <div class="gridStyle" data-ng-grid="gridOptions">  
+    </div>  
+</div>  
+  </body>
+  <script>
+
+	  var app = angular.module('myApp', ['ui.grid']);
+	    app.controller('myController', function($scope) {
+
+      var self = this;  
+      //基本数据属性  
+      $scope.mySelections = [];  
+      //Grid数据  
+      $scope.myData = [];  
+      //Grid 筛选  
+      $scope.filterOptions = {  
+          filterText: '',  
+          useExternalFilter: false  
+      };  
+      //总共条目  
+      $scope.totalServerItems = 0;  
+      //设置相关页面数据  
+      $scope.pagingOptions = {  
+          pageSizes: [250, 500, 1000],//page 行数可选值  
+          pageSize: 250, //每页行数  
+          currentPage: 1, //当前显示页数  
+      };  
+      
+      var largeLoad = function(){
+    	  
+      }
+      //操作方法设置  
+      self.getPagedDataAsync = function (pageSize, page, searchText) {  
+          setTimeout(function () {  
+              var data;  
+              if (searchText) {  
+                  var ft = searchText.toLowerCase();  
+                  data = largeLoad().filter(function (item) {  
+                      return JSON.stringify(item).toLowerCase().indexOf(ft);  
+                  });  
+              }  
+              else {  
+                  data = largeLoad();  
+              }  
+
+
+              var pagedData = data.slice((page - 1) * pageSize, page * pageSize);  
+              $scope.myData = pagedData;  
+              $scope.totalServerItems = data.length;  
+              if (!$scope.$$phase) {  
+                  $scope.$apply();  
+              }  
+          }, 100);  
+      };  
+	
+
+      $scope.$watch('pagingOptions', function () {  
+          self.getPagedDataAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage, $scope.filterOptions.filterText);  
+      },true);  
+      $scope.$watch('filterOptions', function () {  
+          self.getPagedDataAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage, $scope.filterOptions.filterText);  
+      },true);  
+
+
+      self.getPagedDataAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage);  
+
+
+      $scope.gridOptions = {  
+          data: 'myData',  
+          selectedItems: $scope.mySelections,  
+          showSelectionCheckbox: true,  
+          multiSelect: true,  
+          showGroupPanel: false,  
+          showColumnMenu: true,  
+          enableCellSelection: true,  
+          enableCellEditOnFocus: true,  
+          enablePaging: true,  
+          showFooter: true,  
+          totalServerItems: $scope.totalServerItems,  
+          filterOptions: $scope.filterOptions,  
+          pagingOptions: $scope.pagingOptions,  
+          i18n:'zh-cn',  
+          columnDefs: [  
+              { field: 'name', displayName: 'Very Long Name Title', sortable: false },  
+              { field: 'allowance', width: 120, aggLabelFilter: 'currency', cellTemplate: '<div ng-class="{red: row.entity[col.field] > 30}"><div class="ngCellText">{{row.entity[col.field] | currency}}</div></div>' },  
+              { field: 'birthday', width: '120px', cellFilter: 'date', resizable: false },  
+              { field: 'paid', width: '*', cellFilter: 'checkmark' }]  
+      };  
+  });  
+  </script>
+</html>
