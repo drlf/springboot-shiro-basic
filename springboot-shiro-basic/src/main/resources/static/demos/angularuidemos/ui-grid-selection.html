@@ -1,0 +1,153 @@
+<!doctype html>
+<html ng-app="app">
+  <head>
+    <script src="//cdn.bootcss.com/angular.js/1.2.26/angular.js"></script>
+    <script src="//cdn.bootcss.com/angular-ui-grid/3.0.6/ui-grid.js"></script>
+    <link href="//cdn.bootcss.com/angular-ui-grid/3.0.6/ui-grid.css" rel="stylesheet">
+  </head>
+  <body>
+    <div ng-controller="MainCtrl">
+      <button type="button" class="btn btn-success" ng-click="toggleMultiSelect()">Toggle multiSelect</button>  <strong>MultiSelect:</strong> <span ng-bind="gridApi.grid.options.multiSelect"></span>
+      <button type="button" class="btn btn-success" ng-click="toggleRow1()">Toggle Row 0</button>
+      <br/>
+      <br/>
+      <button type="button" class="btn btn-success" ng-click="toggleModifierKeysToMultiSelect()">Toggle modifierKeysToMultiSelect</button>  <strong>ModifierKeysToMultiSelect:</strong> <span ng-bind="gridApi.grid.options.modifierKeysToMultiSelect"> </span>
+      <br/>
+      <br/>
+      <button type="button" class="btn btn-success" ng-disabled="!gridApi.grid.options.multiSelect" ng-click="selectAll()">Select All</button>
+      <button type="button" class="btn btn-success" ng-click="clearAll()">Clear All</button>
+      <button type="button" class="btn btn-success" ng-click="setSelectable()">Set Selectable</button>
+      <button type="button" class="btn btn-success" ng-click="toggleFullRowSelection()">Toggle full row selection</button>
+      <br/>
+    
+      <div ui-grid="gridOptions" ui-grid-selection class="grid"></div>
+    </div>
+    <div ng-controller="SecondCtrl">
+      Single selection grid without rowHeader, and allowing rowSelection to be toggled on and off dynamically:
+      <br/>
+      <button type="button" class="btn btn-success" ng-click="toggleRowSelection()">Toggle rowSelection</button>  <strong>rowSelection:</strong> <span ng-bind="gridApi.grid.options.enableRowSelection"></span>
+      <div ui-grid="gridOptions" ui-grid-selection class="grid"></div>
+    </div>
+  </body>
+  <script>
+  var app = angular.module('app', [ 'ui.grid', 'ui.grid.selection']);
+  
+  app.controller('MainCtrl', ['$scope', '$http', '$log', '$timeout', 'uiGridConstants', function ($scope, $http, $log, $timeout, uiGridConstants) {
+    $scope.gridOptions = {
+      enableRowSelection: true,
+      enableSelectAll: true,
+      selectionRowHeaderWidth: 35,
+      rowHeight: 35,
+      showGridFooter:true
+    };
+   
+    $scope.gridOptions.columnDefs = [
+      { name: 'id' },
+      { name: 'name'},
+      { name: 'age', displayName: 'Age (not focusable)', allowCellFocus : false },
+      { name: 'address.city' }
+    ];
+   
+    $scope.gridOptions.multiSelect = true;
+   
+    $http.get('/data/500_complex.json')
+      .success(function(data) {
+        $scope.gridOptions.data = data;
+        $timeout(function() {
+          if($scope.gridApi.selection.selectRow){
+            $scope.gridApi.selection.selectRow($scope.gridOptions.data[0]);
+          }
+        });
+      });
+   
+      $scope.info = {};
+   
+      $scope.toggleMultiSelect = function() {
+        $scope.gridApi.selection.setMultiSelect(!$scope.gridApi.grid.options.multiSelect);
+      };
+   
+      $scope.toggleModifierKeysToMultiSelect = function() {
+        $scope.gridApi.selection.setModifierKeysToMultiSelect(!$scope.gridApi.grid.options.modifierKeysToMultiSelect);
+      };
+   
+      $scope.selectAll = function() {
+        $scope.gridApi.selection.selectAllRows();
+      };
+   
+      $scope.clearAll = function() {
+        $scope.gridApi.selection.clearSelectedRows();
+      };
+   
+      $scope.toggleRow1 = function() {
+        $scope.gridApi.selection.toggleRowSelection($scope.gridOptions.data[0]);
+      };
+   
+      $scope.toggleFullRowSelection = function() {
+        $scope.gridOptions.enableFullRowSelection = !$scope.gridOptions.enableFullRowSelection;
+        $scope.gridApi.core.notifyDataChange( uiGridConstants.dataChange.OPTIONS);
+      };
+   
+      $scope.setSelectable = function() {
+        $scope.gridApi.selection.clearSelectedRows();
+   
+        $scope.gridOptions.isRowSelectable = function(row){
+          if(row.entity.age > 30){
+            return false;
+          } else {
+            return true;
+          }
+        };
+        $scope.gridApi.core.notifyDataChange(uiGridConstants.dataChange.OPTIONS);
+   
+        $scope.gridOptions.data[0].age = 31;
+        $scope.gridApi.core.notifyDataChange(uiGridConstants.dataChange.EDIT);
+      };
+   
+      $scope.gridOptions.onRegisterApi = function(gridApi){
+        //set gridApi on scope
+        $scope.gridApi = gridApi;
+        gridApi.selection.on.rowSelectionChanged($scope,function(row){
+          var msg = 'row selected ' + row.isSelected;
+          $log.log(msg);
+        });
+   
+        gridApi.selection.on.rowSelectionChangedBatch($scope,function(rows){
+          var msg = 'rows changed ' + rows.length;
+          $log.log(msg);
+        });
+      };
+  }]);
+   
+  app.controller('SecondCtrl', ['$scope', '$http', '$interval', 'uiGridConstants', function ($scope, $http, $interval, uiGridConstants) {
+    $scope.gridOptions = { enableRowSelection: true, enableRowHeaderSelection: false };
+   
+    $scope.gridOptions.columnDefs = [
+      { name: 'id' },
+      { name: 'name'},
+      { name: 'age', displayName: 'Age (not focusable)', allowCellFocus : false },
+      { name: 'address.city' }
+    ];
+   
+    $scope.gridOptions.multiSelect = false;
+    $scope.gridOptions.modifierKeysToMultiSelect = false;
+    $scope.gridOptions.noUnselect = true;
+    $scope.gridOptions.onRegisterApi = function( gridApi ) {
+      $scope.gridApi = gridApi;
+    };
+   
+    $scope.toggleRowSelection = function() {
+      $scope.gridApi.selection.clearSelectedRows();
+      $scope.gridOptions.enableRowSelection = !$scope.gridOptions.enableRowSelection;
+      $scope.gridApi.core.notifyDataChange( uiGridConstants.dataChange.OPTIONS);
+    };
+   
+    $http.get('500_complex.json')
+      .success(function(data) {
+        $scope.gridOptions.data = data;
+   
+        // $interval whilst we wait for the grid to digest the data we just gave it
+        $interval( function() {$scope.gridApi.selection.selectRow($scope.gridOptions.data[0]);}, 0, 1);
+      });
+  }]);
+  </script>
+</html>
