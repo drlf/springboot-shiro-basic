@@ -1,6 +1,8 @@
 package cn.ilongfei.springbootbasic.framework;
 
 import org.apache.shiro.authz.UnauthorizedException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -15,6 +17,9 @@ import org.springframework.web.servlet.ModelAndView;
  */
 @ControllerAdvice
 public class DefaultExceptionHandler {
+	
+	private static Logger log = LoggerFactory.getLogger(DefaultExceptionHandler.class);
+	
     /**
      * 没有权限 异常
      * <p/>

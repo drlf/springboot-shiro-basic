@@ -11,6 +11,8 @@ import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.util.ByteSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import cn.ilongfei.springbootbasic.domain.User;
 import cn.ilongfei.springbootbasic.service.UserService;
@@ -22,6 +24,8 @@ import cn.ilongfei.springbootbasic.service.UserService;
  */
 public class UserRealm extends AuthorizingRealm {
 
+	private static Logger log = LoggerFactory.getLogger(UserRealm.class);
+	
     private UserService userService;
 
     public void setUserService(UserService userService) {

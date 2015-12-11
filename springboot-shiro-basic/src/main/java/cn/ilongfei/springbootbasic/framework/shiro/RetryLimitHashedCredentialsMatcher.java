@@ -1,13 +1,15 @@
 package cn.ilongfei.springbootbasic.framework.shiro;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.ExcessiveAttemptsException;
 import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
 import org.apache.shiro.cache.Cache;
 import org.apache.shiro.cache.CacheManager;
-
-import java.util.concurrent.atomic.AtomicInteger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * <p>User: Zhang Kaitao
@@ -15,6 +17,8 @@ import java.util.concurrent.atomic.AtomicInteger;
  * <p>Version: 1.0
  */
 public class RetryLimitHashedCredentialsMatcher extends HashedCredentialsMatcher {
+	
+	private static Logger log = LoggerFactory.getLogger(RetryLimitHashedCredentialsMatcher.class);
 
     private Cache<String, AtomicInteger> passwordRetryCache;
 

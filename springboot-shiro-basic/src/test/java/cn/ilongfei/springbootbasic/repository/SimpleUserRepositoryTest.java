@@ -19,26 +19,26 @@ import static org.junit.matchers.JUnitMatchers.*;
 
 import java.util.List; 
 
-/*@RunWith(SpringJUnit4ClassRunner.class)
+@RunWith(SpringJUnit4ClassRunner.class)
 @Transactional
-@ContextConfiguration(classes = RepositoryTestConfig.class)*/
+@ContextConfiguration(classes = RepositoryTestConfig.class)
 public class SimpleUserRepositoryTest {
-	/*@Autowired SimpleUserRepository simpleUserRepository;
+	@Autowired SimpleUserRepository simpleUserRepository;
 	User user;
 
 	@Before
 	public void setUp() {
 		user = new User();
-		user.setUsername("lf");
+		user.setUsername("lf11");
 		user.setPassword("123456");
 		user.setSalt("12311111111");
-	}*/
+	}
 	
-	//@Test
-	/*public void save() {
+	@Test
+	public void save() {
 		user = simpleUserRepository.save(user);
 		assertThat(user.getId(), not(0L));
-	}*/
+	}
 	
 	//@Test
 	/*public void update() {

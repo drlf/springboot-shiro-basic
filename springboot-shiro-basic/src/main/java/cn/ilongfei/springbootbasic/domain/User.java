@@ -20,7 +20,7 @@ public class User extends BaseEntity {
     private String password;
 	@Column(name = "salt", length = 200)
     private String salt;
-
+	@Column(name = "register_Date")
 	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date registerDate;
 	

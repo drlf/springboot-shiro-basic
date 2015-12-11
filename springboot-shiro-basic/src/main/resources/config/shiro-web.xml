@@ -29,45 +29,23 @@
         <property name="authorizationCachingEnabled" value="true"/>
         <property name="authorizationCacheName" value="authorizationCache"/>
     </bean>
-
-    <!-- 会话ID生成器 -->
-    <bean id="sessionIdGenerator" class="org.apache.shiro.session.mgt.eis.JavaUuidSessionIdGenerator"/>
-
-    <!-- 会话Cookie模板 -->
-    <bean id="sessionIdCookie" class="org.apache.shiro.web.servlet.SimpleCookie">
-        <constructor-arg value="sid"/>
-        <property name="httpOnly" value="true"/>
-        <property name="maxAge" value="180000"/>
-    </bean>
-
-    <!-- 会话DAO -->
-    <bean id="sessionDAO" class="org.apache.shiro.session.mgt.eis.EnterpriseCacheSessionDAO">
-        <property name="activeSessionsCacheName" value="shiro-activeSessionCache"/>
-        <property name="sessionIdGenerator" ref="sessionIdGenerator"/>
-    </bean>
-
-    <!-- 会话验证调度器 -->
-    <bean id="sessionValidationScheduler" class="org.apache.shiro.session.mgt.quartz.QuartzSessionValidationScheduler">
-        <property name="sessionValidationInterval" value="1800000"/>
-        <property name="sessionManager" ref="sessionManager"/>
-    </bean>
+    
+    <!-- Subject工厂 -->
+    <bean id="subjectFactory" class="cn.ilongfei.springbootbasic.framework.shiro.StatelessDefaultSubjectFactory"/>
 
     <!-- 会话管理器 -->
-    <bean id="sessionManager" class="org.apache.shiro.web.session.mgt.DefaultWebSessionManager">
-        <property name="globalSessionTimeout" value="1800000"/>
-        <property name="deleteInvalidSessions" value="true"/>
-        <property name="sessionValidationSchedulerEnabled" value="true"/>
-        <property name="sessionValidationScheduler" ref="sessionValidationScheduler"/>
-        <property name="sessionDAO" ref="sessionDAO"/>
-        <property name="sessionIdCookieEnabled" value="true"/>
-        <property name="sessionIdCookie" ref="sessionIdCookie"/>
+    <bean id="sessionManager" class="org.apache.shiro.session.mgt.DefaultSessionManager">
+        <property name="sessionValidationSchedulerEnabled" value="false"/>
     </bean>
+    
 
     <!-- 安全管理器 -->
     <bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
         <property name="realm" ref="userRealm"/>
-        <property name="sessionManager" ref="sessionManager"/>
         <property name="cacheManager" ref="shiroCacheManager"/>
+        <property name="subjectDAO.sessionStorageEvaluator.sessionStorageEnabled" value="false"/>
+        <property name="subjectFactory" ref="subjectFactory"/>
+        <property name="sessionManager" ref="sessionManager"/>
     </bean>
 
     <!-- 相当于调用SecurityUtils.setSecurityManager(securityManager) -->
@@ -76,32 +54,23 @@
         <property name="arguments" ref="securityManager"/>
     </bean>
 
-    <!-- 基于Form表单的身份验证过滤器 -->
-    <bean id="formAuthenticationFilter" class="org.apache.shiro.web.filter.authc.FormAuthenticationFilter">
-        <property name="usernameParam" value="username"/>
-        <property name="passwordParam" value="password"/>
-        <property name="loginUrl" value="/login.jsp"/>
-    </bean>
+	<bean id="myRestFilter" class="cn.ilongfei.springbootbasic.framework.shiro.MyRestFilter"/>
 
     <!-- Shiro的Web过滤器 -->
     <bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
         <property name="securityManager" ref="securityManager"/>
-        <property name="loginUrl" value="/login.jsp"/>
-        <property name="unauthorizedUrl" value="/unauthorized.jsp"/>
-        <property name="successUrl" value="/user" />  
         <property name="filters">
             <util:map>
-                <entry key="authc" value-ref="formAuthenticationFilter"/>
+                <entry key="myRestAuthc" value-ref="myRestFilter"/>
             </util:map>
-        </property>
+        </property>  
+        
         <property name="filterChainDefinitions">
             <value>
                 / = anon
-                /login = anon
-                /index.jsp = anon
-                /unauthorized.jsp = anon
-                /login.jsp = authc
-                /logout = logout
+                /html/** = anon
+                /access/** = anon
+                /api/** = myRestAuthc
             </value>
         </property>
     </bean>

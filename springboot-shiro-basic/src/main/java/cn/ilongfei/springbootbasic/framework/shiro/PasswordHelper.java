@@ -4,12 +4,17 @@ import org.apache.shiro.crypto.RandomNumberGenerator;
 import org.apache.shiro.crypto.SecureRandomNumberGenerator;
 import org.apache.shiro.crypto.hash.SimpleHash;
 import org.apache.shiro.util.ByteSource;
+import org.apache.shiro.web.filter.authz.HttpMethodPermissionFilter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import cn.ilongfei.springbootbasic.domain.User;
 @Service
 public class PasswordHelper {
 
+	private static Logger log = LoggerFactory.getLogger(PasswordHelper.class);
+	
     private RandomNumberGenerator randomNumberGenerator = new SecureRandomNumberGenerator();
     private String algorithmName = "md5";
     private int hashIterations = 2;

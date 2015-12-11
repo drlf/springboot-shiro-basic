@@ -1,6 +1,23 @@
+【2015-10-08】
+以为shiro-web的filter是顺序执行，取到第一个为有效，看来未必是。
+如下：/access/**=anon
+/**＝restAuthc
+结果是/access/referesh会触发filter，把/**改为/rest/**就好了！
+
+shiro－rest设计：
+MyRestFilter继承自HttpMethodPermissionFilter，实现isAccessAllowed方法即可
+在/access/longin中发放refereshToken，在/access/referesh中发放accessToken
+访问/rest/**时，在header中带上accessToken
+
+[spring-data-rest](http://docs.spring.io/spring-data/rest/docs/current/reference/html/)
+
 【2015-10-06】
 mac下运行h2，下载全平台，运行bin/h2.sh，报文件格式错误，拷贝到h1.sh,chmod 777 h1.sh,运行即可。
 x修改h1.sh,在java命令尾部加上&，避免关闭term时退出程序。
+
+为什么运行prepareTestData会报找不到column错，似乎是没有把字段的名称按驼峰命名方式转化为下划线。但是运行entityTest测试后（在user中插入一条数据），再次执行prepareTestData就成功了？
+难道是创建的表有问题？
+
 
 【2015-9-22】
 计划：

@@ -1,0 +1,106 @@
+<!doctype html>
+<html ng-app="loopbackApp" >
+<head>
+  <meta charset="utf-8">
+  <title>登录</title>
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width">
+
+  <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css" />
+  <link rel="stylesheet" href="bower_components/angular-toasty/css/ng-toasty.css" />
+
+  <!-- build:css styles/main.css -->
+  <link rel="stylesheet" href="/css/AdminLTE.css" />
+  <link rel="stylesheet" href="/css/main.css" />
+  
+  <!-- endbuild -->
+</head>
+<body  ng-controller="LoginCtrl">
+<!--[if lt IE 7]>
+<p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+<![endif]-->
+<div class="lockscreen" style="height: 100%">
+  <div class="form-box" id="login-box">
+    <span class="pull-right image" style="margin: 15px 20px; float: left;">
+      <img class="img-circle" alt="User Image" gravatar-size="50" src="/images/yeoman.png">
+    </span>
+
+    <div class="header" style="text-align: left; padding-left: 25px;" translate=""><span class="ng-scope">登 录</span></div>
+    <form role="form" ng-submit="login()" method="post" class="ng-pristine ng-valid ng-valid-required ng-valid-minlength">
+      <div class="body bg-gray">
+        <!-- ngIf: loginError -->
+        <div class="autofields ng-pristine ng-valid ng-scope ng-valid-required ng-valid-minlength" ng-form="" name="autofields">
+        		<div class="text form-group has-success" ng-class="{'has-error':autofields.username.$invalid &amp;&amp; autofields.username.$dirty, 'has-success':autofields.username.$valid}"><input id="username" name="username" type="text" ng-model="credentials.username" placeholder="用户名" required="required" ng-minlength="2" class="form-control ng-pristine ng-untouched ng-valid ng-valid-required ng-valid-minlength"></div>
+        		<div class="password form-group has-success" ng-class="{'has-error':autofields.password.$invalid &amp;&amp; autofields.password.$dirty, 'has-success':autofields.password.$valid}"><input id="password" name="password" type="password" ng-model="credentials.password" placeholder="密码" required="required" class="form-control ng-pristine ng-valid ng-valid-required ng-touched"></div>
+        		<div class="checkbox form-group has-success" ng-class="{'has-error':autofields.rememberMe.$invalid &amp;&amp; autofields.rememberMe.$dirty, 'has-success':autofields.rememberMe.$valid}"><label class="control-label"><input id="rememberMe" name="rememberMe" type="checkbox" ng-model="credentials.rememberMe" placeholder="记住密码" class="ng-pristine ng-untouched ng-valid">记住密码</label></div>
+        		</div>
+      </div>
+      <div class="footer">
+        <button type="submit" class="btn bg-olive btn-block" translate=""><span class="ng-scope">登 录</span></button>
+        <a href="#/register" class="btn bg-yellow btn-block" translate=""><span class="ng-scope">注 册</span></a>
+        <!-- ngRepeat: provider in authProviders -->
+      </div>
+    </form>
+  </div>
+</div>
+
+
+<div ng-controller="toasty-controller">
+  <toasty-container toasty-defaults='{"timeout": 3000, "close-button":true, "sound": false}'></toasty-container>
+</div>
+
+<script src="bower_components/angular/angular.js"></script>
+<script src="bower_components/angular-animate/angular-animate.js"></script>
+<script src="bower_components/angular-toasty/js/ng-toasty.js"></script>
+<script src="/modules/sys/app.sys.js"></script>
+<script src="/modules/sys/services/storage.service.js"></script>
+<!-- 
+<script src="/js/app.js"></script>
+<script src="/js/config.js"></script>
+ -->
+</body>
+<script>
+(function () {
+'use strict';
+var loginApp = angular.module('loopbackApp', ['toasty','ngAnimate','com.module.sys']);
+loginApp.controller('LoginCtrl', function ($scope, $rootScope, $http, $location, toasty, StorageService) {
+	
+	var mainPage = '/main.html';
+	
+	$scope.init = function(){
+		//$scope.credentials = {rememberMe: true, username: "lf", password:"123"};
+		$scope.credentials = StorageService.getCredentials();
+	};
+	
+	$scope.login = function(){
+		$http.post('/access/login',$scope.credentials).success(function(data){
+	        var next = $location.nextAfterLogin || mainPage;
+	        $location.nextAfterLogin = null;
+	        $scope.credentials.refereshToken = data.refereshToken;
+	        StorageService.setCredentials($scope.credentials);
+	        //AppAuth.currentUser = $scope.loginResult.user;
+	        toastInfo('登录', '登录成功');
+	        if (next === '/login') {
+	          next = mainPage;
+	        }
+	        location.href = next;
+    		});
+	}
+	
+	var toastInfo = function (title, text) {
+        toasty.pop.info({
+          title: title,
+          msg: text,
+          sound: false
+        });
+      };
+	
+	$scope.init();
+	
+});
+
+})();
+
+</script>
+
+</html>
