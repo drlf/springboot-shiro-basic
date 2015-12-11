@@ -19,7 +19,7 @@ import cn.ilongfei.shiroDemo.Constants;
  * <p>Version: 1.0
  */
 public class StatelessAuthcFilter extends AccessControlFilter {
-
+	//http://www.boyunjian.com/javadoc/org.apache.shiro/shiro-web/1.2.1/_/org/apache/shiro/web/filter/AccessControlFilter.html
     @Override
     protected boolean isAccessAllowed(ServletRequest request, ServletResponse response, Object mappedValue) throws Exception {
     		System.out.println(getPathWithinApplication(request));
